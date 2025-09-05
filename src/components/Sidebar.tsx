@@ -36,7 +36,7 @@ export function Sidebar({ activeView, onViewChange, taskCounts, onSearch, custom
         { id: 'upcoming', label: 'Upcoming', icon: ChevronRight, count: taskCounts.upcoming },
         { id: 'today', label: 'Today', icon: Calendar, count: taskCounts.today },
         { id: 'calendar', label: 'Calendar', icon: Calendar, count: 0 },
-        { id: 'sticky', label: 'Sticky Wall', icon: StickyNote, count: 0 },
+        { id: 'sticky', label: 'Notes', icon: StickyNote, count: 0 },
       ]
     },
     {

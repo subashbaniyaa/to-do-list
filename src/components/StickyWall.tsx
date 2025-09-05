@@ -103,7 +103,7 @@ export function StickyWall({ notes, onAddNote, onUpdateNote, onDeleteNote }: Sti
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl">Sticky Wall</h1>
+          <h1 className="text-2xl">Notes</h1>
           <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-sm rounded">
             {notes.length}
           </span>
@@ -149,8 +149,8 @@ export function StickyWall({ notes, onAddNote, onUpdateNote, onDeleteNote }: Sti
                     <button
                       key={color.name}
                       onClick={() => setNewNote(prev => ({ ...prev, color: color.value }))}
-                      className={`w-8 h-8 rounded border-2 ${color.value} ${
-                        newNote.color === color.value ? color.border : 'border-transparent'
+                      className={`w-8 h-8 rounded border-2 transition-all duration-200 hover:scale-110 hover:shadow-md ${color.value} ${
+                        newNote.color === color.value ? color.border + ' ring-1 ring-blue-500' : 'border-gray-300 dark:border-gray-600 hover:border-gray-400'
                       }`}
                       title={color.name}
                     />
@@ -316,8 +316,8 @@ export function StickyWall({ notes, onAddNote, onUpdateNote, onDeleteNote }: Sti
                     <button
                       key={color.name}
                       onClick={() => setEditingNote(prev => prev ? { ...prev, color: color.value } : null)}
-                      className={`w-8 h-8 rounded border-2 ${color.value} ${
-                        editingNote.color === color.value ? color.border : 'border-transparent'
+                      className={`w-8 h-8 rounded border-2 transition-all duration-200 hover:scale-110 hover:shadow-md ${color.value} ${
+                        editingNote.color === color.value ? color.border + ' ring-1 ring-blue-500' : 'border-gray-300 dark:border-gray-600 hover:border-gray-400'
                       }`}
                       title={color.name}
                     />
