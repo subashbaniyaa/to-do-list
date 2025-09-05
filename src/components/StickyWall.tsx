@@ -26,12 +26,12 @@ interface StickyWallProps {
 }
 
 const noteColors = [
-  { name: 'Yellow', value: 'bg-yellow-200 dark:bg-yellow-800', border: 'border-yellow-300 dark:border-yellow-700' },
-  { name: 'Pink', value: 'bg-pink-200 dark:bg-pink-800', border: 'border-pink-300 dark:border-pink-700' },
-  { name: 'Blue', value: 'bg-blue-200 dark:bg-blue-800', border: 'border-blue-300 dark:border-blue-700' },
-  { name: 'Green', value: 'bg-green-200 dark:bg-green-800', border: 'border-green-300 dark:border-green-700' },
-  { name: 'Purple', value: 'bg-purple-200 dark:bg-purple-800', border: 'border-purple-300 dark:border-purple-700' },
-  { name: 'Orange', value: 'bg-orange-200 dark:bg-orange-800', border: 'border-orange-300 dark:border-orange-700' },
+  { name: 'Yellow', value: 'bg-yellow-200 dark:bg-yellow-800', border: 'border-yellow-300 dark:border-yellow-700', hex: '#fef3c7' },
+  { name: 'Pink', value: 'bg-pink-200 dark:bg-pink-800', border: 'border-pink-300 dark:border-pink-700', hex: '#fce7f3' },
+  { name: 'Blue', value: 'bg-blue-200 dark:bg-blue-800', border: 'border-blue-300 dark:border-blue-700', hex: '#dbeafe' },
+  { name: 'Green', value: 'bg-green-200 dark:bg-green-800', border: 'border-green-300 dark:border-green-700', hex: '#dcfce7' },
+  { name: 'Purple', value: 'bg-purple-200 dark:bg-purple-800', border: 'border-purple-300 dark:border-purple-700', hex: '#ede9fe' },
+  { name: 'Orange', value: 'bg-orange-200 dark:bg-orange-800', border: 'border-orange-300 dark:border-orange-700', hex: '#fed7aa' },
 ];
 
 export function StickyWall({ notes, onAddNote, onUpdateNote, onDeleteNote }: StickyWallProps) {
@@ -41,7 +41,8 @@ export function StickyWall({ notes, onAddNote, onUpdateNote, onDeleteNote }: Sti
     title: '',
     content: '',
     color: noteColors[0].value,
-    tags: [] as string[]
+    tags: [] as string[],
+    customColor: ''
   });
   const [newTag, setNewTag] = useState('');
 
@@ -57,7 +58,8 @@ export function StickyWall({ notes, onAddNote, onUpdateNote, onDeleteNote }: Sti
         title: '',
         content: '',
         color: noteColors[0].value,
-        tags: []
+        tags: [],
+        customColor: ''
       });
       setIsAddDialogOpen(false);
     }
@@ -144,17 +146,45 @@ export function StickyWall({ notes, onAddNote, onUpdateNote, onDeleteNote }: Sti
               </div>
               <div className="grid gap-2">
                 <Label>Color</Label>
-                <div className="flex gap-2 flex-wrap">
+                <div className="flex gap-3 flex-wrap items-center">
                   {noteColors.map((color) => (
                     <button
                       key={color.name}
-                      onClick={() => setNewNote(prev => ({ ...prev, color: color.value }))}
-                      className={`w-8 h-8 rounded border-2 ${color.value} ${
-                        newNote.color === color.value ? color.border : 'border-transparent'
+                      onClick={() => setNewNote(prev => ({ ...prev, color: color.value, customColor: '' }))}
+                      className={`relative w-10 h-10 rounded-lg border-2 transition-all duration-200 transform hover:scale-110 hover:shadow-lg ${
+                        color.value
+                      } ${
+                        newNote.color === color.value 
+                          ? `${color.border} ring-2 ring-blue-500 ring-offset-2` 
+                          : 'border-gray-300 dark:border-gray-600 hover:border-gray-400'
                       }`}
                       title={color.name}
-                    />
+                    >
+                      {newNote.color === color.value && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-3 h-3 bg-white dark:bg-black rounded-full border border-gray-400"></div>
+                        </div>
+                      )}
+                    </button>
                   ))}
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="color"
+                      value={newNote.customColor || '#ffffff'}
+                      onChange={(e) => {
+                        const customHex = e.target.value;
+                        const customBgClass = `bg-[${customHex}]`;
+                        setNewNote(prev => ({ 
+                          ...prev, 
+                          color: customBgClass,
+                          customColor: customHex 
+                        }));
+                      }}
+                      className="w-10 h-10 rounded-lg border-2 border-gray-300 dark:border-gray-600 cursor-pointer hover:scale-110 transition-transform duration-200"
+                      title="Custom Color"
+                    />
+                    <span className="text-xs text-gray-500 text-center">Custom</span>
+                  </div>
                 </div>
               </div>
               <div className="grid gap-2">
@@ -311,17 +341,44 @@ export function StickyWall({ notes, onAddNote, onUpdateNote, onDeleteNote }: Sti
               </div>
               <div className="grid gap-2">
                 <Label>Color</Label>
-                <div className="flex gap-2 flex-wrap">
+                <div className="flex gap-3 flex-wrap items-center">
                   {noteColors.map((color) => (
                     <button
                       key={color.name}
                       onClick={() => setEditingNote(prev => prev ? { ...prev, color: color.value } : null)}
-                      className={`w-8 h-8 rounded border-2 ${color.value} ${
-                        editingNote.color === color.value ? color.border : 'border-transparent'
+                      className={`relative w-10 h-10 rounded-lg border-2 transition-all duration-200 transform hover:scale-110 hover:shadow-lg ${
+                        color.value
+                      } ${
+                        editingNote.color === color.value 
+                          ? `${color.border} ring-2 ring-blue-500 ring-offset-2` 
+                          : 'border-gray-300 dark:border-gray-600 hover:border-gray-400'
                       }`}
                       title={color.name}
-                    />
+                    >
+                      {editingNote.color === color.value && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-3 h-3 bg-white dark:bg-black rounded-full border border-gray-400"></div>
+                        </div>
+                      )}
+                    </button>
                   ))}
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="color"
+                      value={editingNote.color?.includes('#') ? editingNote.color : '#ffffff'}
+                      onChange={(e) => {
+                        const customHex = e.target.value;
+                        const customBgClass = `bg-[${customHex}]`;
+                        setEditingNote(prev => prev ? { 
+                          ...prev, 
+                          color: customBgClass
+                        } : null);
+                      }}
+                      className="w-10 h-10 rounded-lg border-2 border-gray-300 dark:border-gray-600 cursor-pointer hover:scale-110 transition-transform duration-200"
+                      title="Custom Color"
+                    />
+                    <span className="text-xs text-gray-500 text-center">Custom</span>
+                  </div>
                 </div>
               </div>
               <div className="grid gap-2">
