@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { JSX } from 'react/jsx-runtime';
 import { Calendar } from './ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -52,10 +53,10 @@ export function CalendarView({ tasks, onAddTask, onToggleComplete, onDeleteTask 
     const hasIncompleTasks = tasksForDay.some(task => !task.completed);
     
     return (
-      <div className="relative w-full h-full flex items-center justify-center">
+      <div className="relative w-8 h-8 flex items-center justify-center text-sm">
         <span>{date.getDate()}</span>
         {tasksForDay.length > 0 && (
-          <div className={`absolute -bottom-1 -right-1 w-2 h-2 rounded-full ${
+          <div className={`absolute top-0 right-0 w-2 h-2 rounded-full ${
             hasIncompleTasks ? 'bg-red-500' : 'bg-green-500'
           }`} />
         )}
@@ -64,14 +65,14 @@ export function CalendarView({ tasks, onAddTask, onToggleComplete, onDeleteTask 
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">
       {/* Calendar */}
       <div className="lg:col-span-2">
-        <Card>
-          <CardHeader className="pb-3">
+        <Card className="shadow-sm">
+          <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <CalendarDays className="w-5 h-5" />
+              <CardTitle className="flex items-center gap-3 text-xl">
+                <CalendarDays className="w-6 h-6" />
                 Calendar
               </CardTitle>
               <div className="flex items-center gap-1">

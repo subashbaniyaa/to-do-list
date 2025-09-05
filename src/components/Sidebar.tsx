@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Search, Calendar, StickyNote, User, Briefcase, List, Plus, Settings, LogOut, ChevronRight } from 'lucide-react';
+import { JSX } from 'react/jsx-runtime';
+import { Search, Calendar, StickyNote, User, Briefcase, List, Plus, Settings, ChevronRight } from 'lucide-react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
@@ -163,10 +164,6 @@ export function Sidebar({ activeView, onViewChange, taskCounts, onSearch, custom
           >
             <Settings className="w-4 h-4 mr-3" />
             Settings
-          </Button>
-          <Button variant="ghost" className="w-full justify-start text-gray-700 dark:text-gray-300">
-            <LogOut className="w-4 h-4 mr-3" />
-            Sign out
           </Button>
         </div>
       </div>

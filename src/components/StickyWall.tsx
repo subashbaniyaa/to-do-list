@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
+import { JSX } from 'react/jsx-runtime';
 import { Card, CardContent, CardHeader } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Badge } from './ui/badge';
-import { StickyNote, Plus, X, Edit, Trash2, Palette } from 'lucide-react';
+import { StickyNote as StickyNoteIcon, Plus, X, Edit, Trash2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 import { Label } from './ui/label';
 
@@ -219,7 +220,7 @@ export function StickyWall({ notes, onAddNote, onUpdateNote, onDeleteNote }: Sti
           return (
             <Card
               key={note.id}
-              className={`${colorClass.value} ${colorClass.border} border-2 shadow-sm hover:shadow-md transition-shadow`}
+              className={`group ${colorClass.value} ${colorClass.border} border-2 shadow-sm hover:shadow-md transition-shadow`}
             >
               <CardHeader className="pb-2">
                 <div className="flex items-start justify-between">
@@ -268,7 +269,7 @@ export function StickyWall({ notes, onAddNote, onUpdateNote, onDeleteNote }: Sti
 
       {notes.length === 0 && (
         <div className="text-center py-12">
-          <StickyNote className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+          <StickyNoteIcon className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
           <h3 className="text-lg mb-2">No sticky notes yet</h3>
           <p className="text-muted-foreground mb-4">
             Create your first sticky note to get started

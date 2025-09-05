@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { JSX } from 'react/jsx-runtime';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
-import { User } from 'lucide-react';
 
 const NAME_KEY = 'todo-user-name';
 
@@ -26,10 +26,10 @@ export function UserGreeting({ isDark }: UserGreetingProps) {
 
   const getTimeBasedGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return 'Good Morning';
-    if (hour < 17) return 'Good Afternoon';
-    if (hour < 21) return 'Good Evening';
-    return 'Good Night';
+    if (hour < 12) return { text: 'Good Morning', emoji: '🌞' };
+    if (hour < 17) return { text: 'Good Afternoon', emoji: '🌇' };
+    if (hour < 21) return { text: 'Good Evening', emoji: '🌄' };
+    return { text: 'Good Night', emoji: '🌝' };
   };
 
   const handleSaveName = () => {
@@ -49,38 +49,22 @@ export function UserGreeting({ isDark }: UserGreetingProps) {
 
   return (
     <>
-      <div className="text-center mb-6">
-        <div className="flex items-center justify-center gap-3 mb-2">
-          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
-            <User className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h2 className="text-2xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              {getTimeBasedGreeting()}
-            </h2>
-            {userName && (
-              <div className="flex items-center gap-2">
-                <p className="text-lg text-muted-foreground">{userName}!</p>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleEditName}
-                  className="h-6 px-2 text-xs"
-                >
-                  Edit
-                </Button>
-              </div>
-            )}
-          </div>
+      <div className="mb-6">
+        <div className="flex items-center gap-3">
+          <h2 className="text-2xl font-semibold">
+            {getTimeBasedGreeting().emoji} {getTimeBasedGreeting().text}, {userName || 'there'}!
+          </h2>
+          {userName && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleEditName}
+              className="h-6 px-2 text-xs"
+            >
+              Edit
+            </Button>
+          )}
         </div>
-        <p className="text-sm text-muted-foreground">
-          {new Date().toLocaleDateString('en-US', { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-          })}
-        </p>
       </div>
 
       <Dialog open={showNameDialog} onOpenChange={setShowNameDialog}>

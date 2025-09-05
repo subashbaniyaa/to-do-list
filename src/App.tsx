@@ -230,10 +230,6 @@ export default function App() {
                   {taskCounts.upcoming}
                 </span>
               </div>
-              <Button variant="ghost" size="sm" onClick={() => setIsSettingsOpen(true)}>
-                <Settings className="w-4 h-4" />
-                Settings
-              </Button>
             </div>
 
             <TaskSection

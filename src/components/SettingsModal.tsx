@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { JSX } from 'react/jsx-runtime';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
