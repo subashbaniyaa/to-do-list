@@ -53,10 +53,8 @@ export default defineConfig({
     outDir: 'build',
   },
   server: {
-    port: 3000,
-    open: true,
-    allowedHosts: [
-      'c3e6c583-8248-469f-aab2-227ffb6df53b-00-ggavrfyca7so.sisko.replit.dev'
-    ],
+    host: '0.0.0.0',
+    port: 5000,
+    allowedHosts: true,
   },
 });

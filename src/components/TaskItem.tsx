@@ -1,3 +1,4 @@
+import React from 'react';
 import { Button } from './ui/button';
 import { Checkbox } from './ui/checkbox';
 import { Trash2 } from 'lucide-react';

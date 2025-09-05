@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Settings } from 'lucide-react';
 import { Button } from './components/ui/button';
 import { Task } from './components/TaskItem';
@@ -116,12 +116,13 @@ export default function App() {
 
   const addTask = (text: string, category?: Task['category'], dueDate?: Date, list?: string) => {
     // Determine the list based on the active view
-    let taskList = list || 'personal';
+    let taskList: Task['list'] = list as Task['list'] || 'personal';
     
     if (activeView === 'work') taskList = 'work';
     else if (activeView === 'list1') taskList = 'list1';
     else if (activeView.startsWith('custom-')) {
-      taskList = activeView.replace('custom-', '');
+      // For custom lists, we'll default to 'personal' since they're not in the defined type
+      taskList = 'personal';
     }
 
     const newTask: Task = {
