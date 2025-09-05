@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Calendar } from './ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -175,7 +175,7 @@ export function CalendarView({ tasks, onAddTask, onToggleComplete, onDeleteTask 
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => selectedDate && onAddTask('', 'upcoming', selectedDate)}
+                  onClick={() => selectedDate && onAddTask('New task', 'upcoming', selectedDate)}
                 >
                   <Plus className="w-3 h-3 mr-1" />
                   Add Task

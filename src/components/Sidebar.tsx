@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Search, Calendar, StickyNote, User, Briefcase, List, Plus, Settings, LogOut, ChevronRight } from 'lucide-react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';

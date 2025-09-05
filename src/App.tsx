@@ -8,6 +8,8 @@ import { DarkModeToggle } from './components/DarkModeToggle';
 import { SettingsModal, Settings as SettingsType } from './components/SettingsModal';
 import { CalendarView } from './components/CalendarView';
 import { StickyWall } from './components/StickyWall';
+import { UserGreeting } from './components/UserGreeting';
+import { MotivationalQuote } from './components/MotivationalQuote';
 
 const STORAGE_KEY = 'todo-tasks';
 const THEME_KEY = 'todo-theme';
@@ -217,6 +219,10 @@ export default function App() {
       case 'upcoming':
         return (
           <div className="max-w-4xl">
+            <UserGreeting isDark={isDark} />
+            <div className="mb-6">
+              <MotivationalQuote />
+            </div>
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
                 <h1 className="text-2xl">Upcoming</h1>
