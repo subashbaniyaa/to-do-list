@@ -6,7 +6,9 @@ channel = "stable-25_05"
 packages = ["unzipNLS"]
 
 [deployment]
-run = ["sh", "-c", "npm run dev"]
+run = ["npx", "vite", "preview", "--host", "0.0.0.0", "--port", "5000"]
+deploymentTarget = "autoscale"
+build = ["npm", "run", "build"]
 
 [[ports]]
 localPort = 3000
