@@ -10,6 +10,7 @@ interface TaskSectionProps {
   onAddTask: (text: string) => void;
   onToggleComplete: (id: string) => void;
   onDeleteTask: (id: string) => void;
+  onEditTask?: (task: Task) => void;
   showAddNew?: boolean;
   emptyMessage?: string;
 }
@@ -20,6 +21,7 @@ export function TaskSection({
   onAddTask, 
   onToggleComplete, 
   onDeleteTask,
+  onEditTask,
   showAddNew = true,
   emptyMessage = "No tasks yet. Add one above to get started!"
 }: TaskSectionProps) {
@@ -93,6 +95,7 @@ export function TaskSection({
                 task={task}
                 onToggleComplete={onToggleComplete}
                 onDeleteTask={onDeleteTask}
+                onEditTask={onEditTask}
                 compact={true}
               />
               <ChevronRight className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />

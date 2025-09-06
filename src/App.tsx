@@ -4,6 +4,7 @@ import { Button } from './components/ui/button';
 import { Task } from './components/TaskItem';
 import { Sidebar } from './components/Sidebar';
 import { TaskSection } from './components/TaskSection';
+import { TaskEditModal } from './components/TaskEditModal';
 import { DarkModeToggle } from './components/DarkModeToggle';
 import { SettingsModal, Settings as SettingsType } from './components/SettingsModal';
 import { CalendarView } from './components/CalendarView';
@@ -45,6 +46,8 @@ export default function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [settings, setSettings] = useState<SettingsType>(defaultSettings);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -135,7 +138,10 @@ export default function App() {
       category: category || 'upcoming',
       list: taskList,
       dueDate,
-      tags: []
+      tags: [],
+      description: '',
+      color: '#3B82F6',
+      subtasks: []
     };
     setTasks(prev => [...prev, newTask]);
   };
@@ -150,6 +156,30 @@ export default function App() {
 
   const deleteTask = (id: string) => {
     setTasks(prev => prev.filter(task => task.id !== id));
+  };
+
+  const updateTask = (updatedTask: Task) => {
+    setTasks(prev => prev.map(task => 
+      task.id === updatedTask.id ? updatedTask : task
+    ));
+  };
+
+  const handleEditTask = (task: Task) => {
+    setEditingTask(task);
+    setIsTaskModalOpen(true);
+  };
+
+  const handleSaveTask = (task: Task) => {
+    if (editingTask) {
+      updateTask(task);
+    } else {
+      setTasks(prev => [...prev, task]);
+    }
+  };
+
+  const handleCloseTaskModal = () => {
+    setEditingTask(null);
+    setIsTaskModalOpen(false);
   };
 
   const toggleDarkMode = () => {
@@ -238,6 +268,7 @@ export default function App() {
               onAddTask={(text) => addTask(text, 'today')}
               onToggleComplete={toggleTaskComplete}
               onDeleteTask={deleteTask}
+              onEditTask={handleEditTask}
             />
 
             <TaskSection
@@ -246,6 +277,7 @@ export default function App() {
               onAddTask={(text) => addTask(text, 'tomorrow')}
               onToggleComplete={toggleTaskComplete}
               onDeleteTask={deleteTask}
+              onEditTask={handleEditTask}
             />
 
             <TaskSection
@@ -254,6 +286,7 @@ export default function App() {
               onAddTask={(text) => addTask(text, 'thisWeek')}
               onToggleComplete={toggleTaskComplete}
               onDeleteTask={deleteTask}
+              onEditTask={handleEditTask}
             />
           </div>
         );
@@ -276,6 +309,7 @@ export default function App() {
               onAddTask={(text) => addTask(text, 'today')}
               onToggleComplete={toggleTaskComplete}
               onDeleteTask={deleteTask}
+              onEditTask={handleEditTask}
             />
           </div>
         );
@@ -319,6 +353,7 @@ export default function App() {
               onAddTask={(text) => addTask(text, 'upcoming')}
               onToggleComplete={toggleTaskComplete}
               onDeleteTask={deleteTask}
+              onEditTask={handleEditTask}
             />
           </div>
         );
@@ -342,6 +377,7 @@ export default function App() {
               onAddTask={(text) => addTask(text, 'upcoming')}
               onToggleComplete={toggleTaskComplete}
               onDeleteTask={deleteTask}
+              onEditTask={handleEditTask}
             />
           </div>
         );
@@ -365,6 +401,7 @@ export default function App() {
               onAddTask={(text) => addTask(text, 'upcoming')}
               onToggleComplete={toggleTaskComplete}
               onDeleteTask={deleteTask}
+              onEditTask={handleEditTask}
             />
           </div>
         );
@@ -391,6 +428,7 @@ export default function App() {
                 onAddTask={(text) => addTask(text, 'upcoming')}
                 onToggleComplete={toggleTaskComplete}
                 onDeleteTask={deleteTask}
+                onEditTask={handleEditTask}
               />
             </div>
           );
@@ -416,6 +454,7 @@ export default function App() {
                 onAddTask={(text) => addTask(text, 'upcoming')}
                 onToggleComplete={toggleTaskComplete}
                 onDeleteTask={deleteTask}
+                onEditTask={handleEditTask}
               />
             </div>
           );
@@ -465,6 +504,14 @@ export default function App() {
         onToggleDarkMode={toggleDarkMode}
         onSettingsChange={setSettings}
         currentSettings={settings}
+      />
+
+      <TaskEditModal
+        isOpen={isTaskModalOpen}
+        onClose={handleCloseTaskModal}
+        task={editingTask}
+        onSave={handleSaveTask}
+        onDelete={deleteTask}
       />
     </div>
   );
