@@ -9,7 +9,7 @@ import { Checkbox } from './ui/checkbox';
 import { Badge } from './ui/badge';
 import { Calendar } from './ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import { CalendarIcon, Plus, X, Trash2 } from 'lucide-react';
+import { CalendarIcon, Plus, X, Trash2, Clock, Bell, Target } from 'lucide-react';
 import { format } from 'date-fns';
 import { Task, Subtask } from './TaskItem';
 
@@ -43,7 +43,11 @@ export function TaskEditModal({ isOpen, onClose, task, onSave, onDelete }: TaskE
         ...task,
         description: task.description || '',
         color: task.color || taskColors[0],
-        subtasks: task.subtasks || []
+        subtasks: task.subtasks || [],
+        estimatedMinutes: task.estimatedMinutes || 60,
+        actualMinutes: task.actualMinutes || 0,
+        reminder: task.reminder || 60,
+        priority: task.priority || 'medium'
       });
     } else {
       setEditedTask({
@@ -55,7 +59,11 @@ export function TaskEditModal({ isOpen, onClose, task, onSave, onDelete }: TaskE
         color: taskColors[0],
         subtasks: [],
         completed: false,
-        createdAt: Date.now()
+        createdAt: Date.now(),
+        estimatedMinutes: 60,
+        actualMinutes: 0,
+        reminder: 60,
+        priority: 'medium'
       });
     }
   }, [task, isOpen]);
@@ -74,7 +82,11 @@ export function TaskEditModal({ isOpen, onClose, task, onSave, onDelete }: TaskE
       tags: editedTask.tags || [],
       description: editedTask.description || '',
       color: editedTask.color || taskColors[0],
-      subtasks: editedTask.subtasks || []
+      subtasks: editedTask.subtasks || [],
+      estimatedMinutes: editedTask.estimatedMinutes || 0,
+      actualMinutes: editedTask.actualMinutes || 0,
+      reminder: editedTask.reminder || 60,
+      priority: editedTask.priority || 'medium'
     };
 
     onSave(taskToSave);
@@ -240,6 +252,71 @@ export function TaskEditModal({ isOpen, onClose, task, onSave, onDelete }: TaskE
                   </button>
                 </Badge>
               ))}
+            </div>
+          </div>
+
+          {/* Time Estimates and Priority */}
+          <div className="grid grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="estimated-time">Estimated Time (minutes)</Label>
+              <Input
+                id="estimated-time"
+                type="number"
+                min="0"
+                value={editedTask.estimatedMinutes || ''}
+                onChange={(e) => setEditedTask(prev => ({ 
+                  ...prev, 
+                  estimatedMinutes: parseInt(e.target.value) || 0 
+                }))}
+                placeholder="60"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="reminder">Reminder (minutes before)</Label>
+              <Input
+                id="reminder"
+                type="number"
+                min="0"
+                value={editedTask.reminder || ''}
+                onChange={(e) => setEditedTask(prev => ({ 
+                  ...prev, 
+                  reminder: parseInt(e.target.value) || 0 
+                }))}
+                placeholder="60"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Priority</Label>
+              <Select
+                value={editedTask.priority || 'medium'}
+                onValueChange={(value) => setEditedTask(prev => ({ ...prev, priority: value as Task['priority'] }))}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="low">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-green-500" />
+                      Low
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="medium">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                      Medium
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="high">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-red-500" />
+                      High
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
