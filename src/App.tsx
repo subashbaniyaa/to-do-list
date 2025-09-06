@@ -203,7 +203,7 @@ export default function App() {
 
   // Get task counts
   const taskCounts = {
-    upcoming: getUpcomingTasks().filter(t => !t.completed).length,
+    upcoming: [...getTodayTasks(), ...getTomorrowTasks(), ...getThisWeekTasks(), ...getUpcomingTasks()].filter(t => !t.completed).length,
     today: getTodayTasks().filter(t => !t.completed).length,
     personal: getPersonalTasks().filter(t => !t.completed).length,
     work: getWorkTasks().filter(t => !t.completed).length,
