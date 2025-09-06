@@ -12,9 +12,7 @@ import { StickyWall } from './components/StickyWall';
 import { UserGreeting } from './components/UserGreeting';
 import { MotivationalQuote } from './components/MotivationalQuote';
 import { NotificationManager } from './components/NotificationManager';
-import { DragDropCalendar } from './components/DragDropCalendar';
 import { ReviewDashboard } from './components/ReviewDashboard';
-import { StreakTracker } from './components/StreakTracker';
 
 const STORAGE_KEY = 'todo-tasks';
 const THEME_KEY = 'todo-theme';
@@ -54,6 +52,7 @@ export default function App() {
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [runningTaskId, setRunningTaskId] = useState<string | null>(null);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [customTags, setCustomTags] = useState<string[]>([]);
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -227,6 +226,17 @@ export default function App() {
     ));
   };
 
+  // Tag management functions
+  const addCustomTag = (tag: string, color: string) => {
+    if (!customTags.includes(tag)) {
+      setCustomTags(prev => [...prev, tag]);
+    }
+  };
+
+  const removeCustomTag = (tag: string) => {
+    setCustomTags(prev => prev.filter(t => t !== tag));
+  };
+
   const toggleDarkMode = () => {
     setIsDark(prev => !prev);
   };
@@ -369,19 +379,8 @@ export default function App() {
           />
         );
       
-      case 'drag-calendar':
-        return (
-          <DragDropCalendar
-            tasks={getFilteredTasks()}
-            onUpdateTask={updateTask}
-          />
-        );
-      
       case 'review':
         return <ReviewDashboard tasks={getFilteredTasks()} />;
-      
-      case 'streaks':
-        return <StreakTracker tasks={getFilteredTasks()} />;
 
       case 'sticky':
         return (

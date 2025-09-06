@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { JSX } from 'react/jsx-runtime';
-import { Search, Calendar, StickyNote, User, Briefcase, List, Plus, Settings, ChevronRight } from 'lucide-react';
+import { Search, Calendar, StickyNote, User, Briefcase, List, Plus, Settings, ChevronRight, Tag, X, BarChart3 } from 'lucide-react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
@@ -19,14 +19,33 @@ interface SidebarProps {
   customLists?: string[];
   customTags?: string[];
   onOpenSettings: () => void;
+  onAddTag?: (tag: string, color: string) => void;
+  onRemoveTag?: (tag: string) => void;
 }
 
-export function Sidebar({ activeView, onViewChange, taskCounts, onSearch, customLists = [], customTags = [], onOpenSettings }: SidebarProps) {
+export function Sidebar({ activeView, onViewChange, taskCounts, onSearch, customLists = [], customTags = [], onOpenSettings, onAddTag, onRemoveTag }: SidebarProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [newTag, setNewTag] = useState('');
+  const [showAddTag, setShowAddTag] = useState(false);
+  const [selectedTagColor, setSelectedTagColor] = useState('#3B82F6');
+
+  const tagColors = [
+    '#3B82F6', '#EF4444', '#10B981', '#F59E0B', 
+    '#8B5CF6', '#EC4899', '#14B8A6', '#F97316',
+    '#6B7280', '#84CC16', '#F472B6', '#06B6D4'
+  ];
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
     onSearch(value);
+  };
+
+  const handleAddTag = () => {
+    if (newTag.trim() && onAddTag) {
+      onAddTag(newTag.trim(), selectedTagColor);
+      setNewTag('');
+      setShowAddTag(false);
+    }
   };
 
   const menuItems = [
@@ -37,14 +56,6 @@ export function Sidebar({ activeView, onViewChange, taskCounts, onSearch, custom
         { id: 'today', label: 'Today', icon: Calendar, count: taskCounts.today },
         { id: 'calendar', label: 'Calendar', icon: Calendar, count: 0 },
         { id: 'sticky', label: 'Notes', icon: StickyNote, count: 0 },
-      ]
-    },
-    {
-      category: 'PRODUCTIVITY',
-      items: [
-        { id: 'drag-calendar', label: 'Drag Calendar', icon: Calendar, count: 0 },
-        { id: 'review', label: 'Review', icon: ChevronRight, count: 0 },
-        { id: 'streaks', label: 'Streaks', icon: ChevronRight, count: 0 },
       ]
     },
     {
@@ -138,26 +149,116 @@ export function Sidebar({ activeView, onViewChange, taskCounts, onSearch, custom
         )}
 
         <div className="mb-6">
-          <h3 className="text-xs text-gray-500 dark:text-gray-400 mb-3 tracking-wider">
-            TAGS
-          </h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xs text-gray-500 dark:text-gray-400 tracking-wider">
+              TAGS
+            </h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 w-6 p-0"
+              onClick={() => setShowAddTag(!showAddTag)}
+            >
+              <Plus className="w-3 h-3" />
+            </Button>
+          </div>
+          
+          {showAddTag && (
+            <div className="mb-3 space-y-2">
+              <Input
+                placeholder="Tag name..."
+                value={newTag}
+                onChange={(e) => setNewTag(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleAddTag();
+                  }
+                }}
+                className="text-xs"
+              />
+              <div className="flex gap-1 flex-wrap">
+                {tagColors.map((color) => (
+                  <button
+                    key={color}
+                    onClick={() => setSelectedTagColor(color)}
+                    className={`w-5 h-5 rounded-full transition-all ${
+                      selectedTagColor === color ? 'ring-2 ring-offset-1 ring-blue-500' : ''
+                    }`}
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+              </div>
+              <div className="flex gap-1">
+                <Button size="sm" onClick={handleAddTag} className="text-xs h-6">
+                  Add
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setShowAddTag(false)}
+                  className="text-xs h-6"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          )}
+          
           <div className="flex gap-2 flex-wrap">
             {customTags.map((tag) => (
-              <button
+              <div
                 key={tag}
-                onClick={() => onViewChange(`tag-${tag}`)}
-                className={`px-2 py-1 text-xs rounded transition-colors ${
-                  activeView === `tag-${tag}`
-                    ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
-                    : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
-                }`}
+                className="group relative"
               >
-                {tag}
-              </button>
+                <button
+                  onClick={() => onViewChange(`tag-${tag}`)}
+                  className={`px-2 py-1 text-xs rounded transition-colors ${
+                    activeView === `tag-${tag}`
+                      ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                  } pr-6`}
+                >
+                  {tag}
+                </button>
+                {onRemoveTag && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onRemoveTag(tag);
+                    }}
+                    className="absolute right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
             ))}
-            {customTags.length === 0 && (
+            {customTags.length === 0 && !showAddTag && (
               <span className="text-xs text-gray-400">No tags yet</span>
             )}
+          </div>
+        </div>
+
+        {/* Review Section */}
+        <div className="mb-6">
+          <h3 className="text-xs text-gray-500 dark:text-gray-400 mb-3 tracking-wider">
+            ANALYTICS
+          </h3>
+          <div className="space-y-1">
+            <button
+              onClick={() => onViewChange('review')}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
+                activeView === 'review'
+                  ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <BarChart3 className="w-4 h-4" />
+                <span>Review</span>
+              </div>
+            </button>
           </div>
         </div>
       </div>

@@ -42,13 +42,32 @@ export function ReviewDashboard({ tasks }: ReviewDashboardProps) {
 
   const getTasksInRange = () => {
     return tasks.filter(task => {
-      if (!task.dueDate) return false;
-      return isWithinInterval(new Date(task.dueDate), { start, end });
+      // Include tasks that are due in range
+      if (task.dueDate && isWithinInterval(new Date(task.dueDate), { start, end })) {
+        return true;
+      }
+      // Include tasks that were completed in range
+      if (task.completedAt && isWithinInterval(new Date(task.completedAt), { start, end })) {
+        return true;
+      }
+      // Include tasks that were created in range if no due date
+      if (!task.dueDate && task.createdAt && isWithinInterval(new Date(task.createdAt), { start, end })) {
+        return true;
+      }
+      return false;
     });
   };
 
   const getCompletedTasks = () => {
-    return getTasksInRange().filter(task => task.completed);
+    return tasks.filter(task => {
+      if (!task.completed) return false;
+      // If task has completedAt, check if it's in range
+      if (task.completedAt) {
+        return isWithinInterval(new Date(task.completedAt), { start, end });
+      }
+      // Otherwise, include if it's in the general task range
+      return getTasksInRange().some(t => t.id === task.id);
+    });
   };
 
   const getPendingTasks = () => {
