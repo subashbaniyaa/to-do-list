@@ -11,6 +11,10 @@ import { CalendarView } from './components/CalendarView';
 import { StickyWall } from './components/StickyWall';
 import { UserGreeting } from './components/UserGreeting';
 import { MotivationalQuote } from './components/MotivationalQuote';
+import { NotificationManager } from './components/NotificationManager';
+import { DragDropCalendar } from './components/DragDropCalendar';
+import { ReviewDashboard } from './components/ReviewDashboard';
+import { StreakTracker } from './components/StreakTracker';
 
 const STORAGE_KEY = 'todo-tasks';
 const THEME_KEY = 'todo-theme';
@@ -48,6 +52,8 @@ export default function App() {
   const [settings, setSettings] = useState<SettingsType>(defaultSettings);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [runningTaskId, setRunningTaskId] = useState<string | null>(null);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -141,16 +147,32 @@ export default function App() {
       tags: [],
       description: '',
       color: '#3B82F6',
-      subtasks: []
+      subtasks: [],
+      estimatedMinutes: 60,
+      actualMinutes: 0,
+      reminder: 60,
+      priority: 'medium'
     };
     setTasks(prev => [...prev, newTask]);
   };
 
   const toggleTaskComplete = (id: string) => {
     setTasks(prev =>
-      prev.map(task =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
+      prev.map(task => {
+        if (task.id === id) {
+          const updatedTask = { ...task, completed: !task.completed };
+          if (!task.completed) {
+            // Task is being completed
+            updatedTask.completedAt = Date.now();
+            // Stop time tracking if this task was being tracked
+            if (runningTaskId === id) {
+              setRunningTaskId(null);
+            }
+          }
+          return updatedTask;
+        }
+        return task;
+      })
     );
   };
 
@@ -180,6 +202,29 @@ export default function App() {
   const handleCloseTaskModal = () => {
     setEditingTask(null);
     setIsTaskModalOpen(false);
+  };
+
+  // Time tracking functions
+  const startTimeTracking = (taskId: string) => {
+    setRunningTaskId(taskId);
+    setTasks(prev => prev.map(task => 
+      task.id === taskId 
+        ? { ...task, startedAt: Date.now() }
+        : task
+    ));
+  };
+
+  const pauseTimeTracking = (taskId: string) => {
+    setRunningTaskId(null);
+  };
+
+  const stopTimeTracking = (taskId: string, totalMinutes: number) => {
+    setRunningTaskId(null);
+    setTasks(prev => prev.map(task => 
+      task.id === taskId 
+        ? { ...task, actualMinutes: totalMinutes, startedAt: undefined }
+        : task
+    ));
   };
 
   const toggleDarkMode = () => {
@@ -323,6 +368,20 @@ export default function App() {
             onDeleteTask={deleteTask}
           />
         );
+      
+      case 'drag-calendar':
+        return (
+          <DragDropCalendar
+            tasks={getFilteredTasks()}
+            onUpdateTask={updateTask}
+          />
+        );
+      
+      case 'review':
+        return <ReviewDashboard tasks={getFilteredTasks()} />;
+      
+      case 'streaks':
+        return <StreakTracker tasks={getFilteredTasks()} />;
 
       case 'sticky':
         return (
@@ -512,6 +571,11 @@ export default function App() {
         task={editingTask}
         onSave={handleSaveTask}
         onDelete={deleteTask}
+      />
+
+      <NotificationManager
+        tasks={tasks}
+        enabled={notificationsEnabled}
       />
     </div>
   );

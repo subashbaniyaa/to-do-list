@@ -40,6 +40,14 @@ export function Sidebar({ activeView, onViewChange, taskCounts, onSearch, custom
       ]
     },
     {
+      category: 'PRODUCTIVITY',
+      items: [
+        { id: 'drag-calendar', label: 'Drag Calendar', icon: Calendar, count: 0 },
+        { id: 'review', label: 'Review', icon: ChevronRight, count: 0 },
+        { id: 'streaks', label: 'Streaks', icon: ChevronRight, count: 0 },
+      ]
+    },
+    {
       category: 'LISTS',
       items: [
         { id: 'personal', label: 'Personal', icon: User, count: taskCounts.personal, color: 'bg-red-500' },
