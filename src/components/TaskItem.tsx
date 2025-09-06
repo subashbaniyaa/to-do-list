@@ -16,6 +16,12 @@ export interface Task {
   description?: string;
   color?: string;
   subtasks?: Subtask[];
+  estimatedMinutes?: number;
+  actualMinutes?: number;
+  startedAt?: number;
+  completedAt?: number;
+  reminder?: number; // minutes before due date
+  priority?: 'low' | 'medium' | 'high';
 }
 
 export interface Subtask {
