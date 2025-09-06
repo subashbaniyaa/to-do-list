@@ -541,8 +541,10 @@ export default function App() {
         taskCounts={taskCounts}
         onSearch={handleSearch}
         customLists={settings.customLists}
-        customTags={settings.customTags}
+        customTags={customTags}
         onOpenSettings={() => setIsSettingsOpen(true)}
+        onAddTag={addCustomTag}
+        onRemoveTag={removeCustomTag}
       />
       
       <div className="flex-1 flex flex-col">
